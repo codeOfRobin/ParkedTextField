@@ -207,27 +207,12 @@ open class ParkedTextField: UITextField {
     // MARK: Utilites
     func updateAttributedTextWith(_ text: String) {
         if let parkedTextRange = text.range(of: parkedText, options: NSString.CompareOptions.backwards, range: nil, locale: nil) {
-            let nsRange = NSRangeFromRange(text, range: parkedTextRange)
-
             let attributedString = NSMutableAttributedString(string: text)
-            attributedString.addAttributes(parkedTextAttributes, range: nsRange)
-
+            attributedString.addAttributes(parkedTextAttributes, range: NSRange.init(parkedTextRange, in: text))
             attributedText = attributedString
         }
     }
-
-    /// http://stackoverflow.com/questions/25138339/nsrange-to-rangestring-index
-    func NSRangeFromRange(_ text:String, range : Range<String.Index>) -> NSRange {
-        let utf16view = text.utf16
-        let from = String.UTF16View.Index(range.lowerBound, within: utf16view)
-        let to = String.UTF16View.Index(range.upperBound, within: utf16view)
-		
-
-        let loc = utf16view.startIndex.distance(to: from)
-        let len = from.distance(to: to)
-        return NSMakeRange(loc, len)
-    }
-
+	
     func goToBeginningOfParkedText() {
         if let position = beginningOfParkedText {
             goToTextPosition(position)
